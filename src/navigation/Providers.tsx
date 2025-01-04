@@ -22,7 +22,7 @@ const themeLight = {
     disabled: '#A5A5A5', // Cinza suave
     placeholder: '#D8D8D8', // Cinza claro
     backdrop: 'rgba(0, 0, 0, 0.3)', // Transparente escuro
-    notification: '#F50057', // Cor de notificação
+    favoritar: '#F50057', // Cor de notificação
   },
 };
 
@@ -42,7 +42,7 @@ const themeDark = {
     disabled: '#555555', // Cinza para elementos desabilitados
     placeholder: '#AAAAAA', // Cinza para placeholders
     backdrop: 'rgba(255, 255, 255, 0.5)', // Transparente claro
-    notification: '#F50057', // Cor de notificação
+    favoritar: '#4ef500', // Cor de notificação
   },
 };
 
