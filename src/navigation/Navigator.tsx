@@ -6,8 +6,7 @@ import React from 'react';
 import {StatusBar} from 'react-native';
 import {Icon, useTheme} from 'react-native-paper';
 import AlteraSenha from '../telas/AlteraSenha';
-import AlunoTela from '../telas/AlunoTela';
-import Alunos from '../telas/ListaReceitasFavoritas';
+import ListaReceitasFavoritas from '../telas/ListaReceitasFavoritas';
 import ReceitaTela from '../telas/ReceitaTela';
 import Receitas from '../telas/Receita';
 import EsqueceuSenha from '../telas/EsqueceuSenha';
@@ -61,7 +60,7 @@ const AppStack = () => {
       />
 
       <Tab.Screen
-        component={Alunos}
+        component={ListaReceitasFavoritas}
         name="Alunos"
         options={{
           tabBarLabel: '',
@@ -109,13 +108,6 @@ export default function Navigator() {
         }}>
         <Stack.Screen component={AuthStack} name="AuthStack" />
         <Stack.Screen component={AppStack} name="AppStack" />
-        <Stack.Screen
-          component={AlunoTela}
-          name="AlunoTela"
-          options={{
-            presentation: 'modal',
-          }}
-        />
         <Stack.Screen
           component={ReceitaTela}
           name="ReceitaTela"

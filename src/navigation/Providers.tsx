@@ -22,7 +22,7 @@ const themeLight = {
     disabled: '#A5A5A5', // Cinza suave
     placeholder: '#D8D8D8', // Cinza claro
     backdrop: 'rgba(0, 0, 0, 0.3)', // Transparente escuro
-    favoritar: '#F50057', // Cor de notificação
+    favoritar: '#FF0000', // Cor de notificação
   },
 };
 
