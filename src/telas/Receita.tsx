@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useContext} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
-import {Avatar, Card, FAB, List, useTheme} from 'react-native-paper';
+import {ScrollView, StyleSheet, View, Text} from 'react-native';
+import {Card, FAB, List, useTheme} from 'react-native-paper';
 import {ReceitaContext} from '../context/ReceitaProvider';
 import {Receita} from '../model/Receita';
 
@@ -29,13 +29,16 @@ export default function Receitas({navigation}: any) {
               key={key}
               style={{...styles.card, borderColor: theme.colors.secondary}}
               onPress={() => irParaTelaReceita(receita)}>
-              <Card.Title
-                title={receita.nome}
-                subtitle={receita.descricao}
-                left={() => (
-                  <Avatar.Image size={40} source={{uri: receita.urlFoto}} />
-                )}
+              {/* Imagem ocupa toda a largura */}
+              <Card.Cover
+                source={{uri: receita.urlFoto}}
+                style={styles.cardImage}
               />
+              {/* Nome da receita */}
+              <Card.Content style={styles.cardContent}>
+                <Text style={styles.cardTitle}>{receita.nome}</Text>
+                <Text style={styles.cardDescription}>{receita.descricao}</Text>
+              </Card.Content>
             </Card>
           ))}
         </ScrollView>
@@ -62,15 +65,32 @@ const styles = StyleSheet.create({
     width: '95%',
   },
   card: {
-    height: 100,
     width: '100%',
-    borderWidth: 1,
     marginBottom: 10,
+    padding: 20,
+  },
+  cardImage: {
+    width: '100%',
+    height: 300,
+  },
+  cardContent: {
+    padding: 10,
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'black',
+  },
+  cardDescription: {
+    fontSize: 16,
+    color: 'grey',
   },
   fab: {
     position: 'absolute',
     margin: 16,
-    right: 0,
-    bottom: 0,
+    right: 16,
+    top: 567,
   },
 });

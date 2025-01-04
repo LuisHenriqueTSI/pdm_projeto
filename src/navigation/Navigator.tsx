@@ -45,42 +45,55 @@ const AppStack = () => {
         tabBarStyle: {backgroundColor: theme.colors.surface},
       })}>
       <Tab.Screen
-        component={Alunos}
-        name="Alunos"
+        component={Receitas}
+        name="Receitas"
         options={{
-          tabBarLabel: 'Alunos',
+          tabBarLabel: '',
           tabBarIcon: () => (
             <Icon
-              source="account-group"
+              source="home-outline"
               color={theme.colors.primary}
-              size={20}
+              size={30}
             />
           ),
+          tabBarIconStyle: {
+            alignSelf: 'center',
+            marginTop: 7,
+          }, // Adicionando margem superior
         }}
       />
 
       <Tab.Screen
-        component={Receitas}
-        name="Receitas"
+        component={Alunos}
+        name="Alunos"
         options={{
-          tabBarLabel: 'Receitas',
+          tabBarLabel: '',
           tabBarIcon: () => (
             <Icon
-              source="office-building-outline"
+              source="heart-outline"
               color={theme.colors.primary}
-              size={20}
+              size={27}
             />
           ),
+          tabBarIconStyle: {
+            alignSelf: 'center',
+            marginTop: 7,
+          }, // Adicionando margem superior
         }}
       />
+
       <Tab.Screen
         component={Menu}
         name="Menu"
         options={{
-          tabBarLabel: 'Menu',
+          tabBarLabel: '',
           tabBarIcon: () => (
-            <Icon source="menu" color={theme.colors.primary} size={20} />
+            <Icon source="menu" color={theme.colors.primary} size={30} />
           ),
+          tabBarIconStyle: {
+            alignSelf: 'center',
+            marginTop: 7,
+          }, // Adicionando margem superior
         }}
       />
     </Tab.Navigator>
