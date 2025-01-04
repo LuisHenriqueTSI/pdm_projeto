@@ -14,8 +14,6 @@ import EsqueceuSenha from '../telas/EsqueceuSenha';
 import Menu from '../telas/Menu';
 import Perfil from '../telas/PerfilTela';
 import Preload from '../telas/Preload';
-import ProfessorTela from '../telas/ProfessorTela';
-import Professores from '../telas/Professores';
 import SignIn from '../telas/SignIn';
 import SignUp from '../telas/SignUp';
 
@@ -60,20 +58,7 @@ const AppStack = () => {
           ),
         }}
       />
-      <Tab.Screen
-        component={Professores}
-        name="Professores"
-        options={{
-          tabBarLabel: 'Professores',
-          tabBarIcon: () => (
-            <Icon
-              source="account-tie-hat"
-              color={theme.colors.primary}
-              size={20}
-            />
-          ),
-        }}
-      />
+
       <Tab.Screen
         component={Receitas}
         name="Receitas"
@@ -121,13 +106,6 @@ export default function Navigator() {
         <Stack.Screen
           component={AlunoTela}
           name="AlunoTela"
-          options={{
-            presentation: 'modal',
-          }}
-        />
-        <Stack.Screen
-          component={ProfessorTela}
-          name="ProfessorTela"
           options={{
             presentation: 'modal',
           }}

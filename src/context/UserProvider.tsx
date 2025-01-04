@@ -12,7 +12,6 @@ export const UserContext = createContext({});
 export const UserProvider = ({children}: any) => {
   const {setUserAuth} = useContext<any>(AuthContext);
   const [alunos, setAlunos] = useState<Usuario[]>([]);
-  const [professores, setProfessores] = useState<Usuario[]>([]);
 
   useEffect(() => {
     //listener para o perfil Aluno
@@ -21,8 +20,6 @@ export const UserProvider = ({children}: any) => {
       .where('perfil', '==', Perfil.Aluno)
       .orderBy('nome')
       .onSnapshot(snapShot => {
-        //console.log(snapShot);
-        //console.log(snapShot._docs);
         if (snapShot) {
           let data: Usuario[] = [];
           snapShot.forEach(doc => {
@@ -39,31 +36,8 @@ export const UserProvider = ({children}: any) => {
         }
       });
 
-    //listener para o perfil Professor
-    const listenerProfessores = firestore()
-      .collection('usuarios')
-      .where('perfil', '==', Perfil.Professor)
-      .orderBy('nome')
-      .onSnapshot(snapShot => {
-        if (snapShot) {
-          let data: Usuario[] = [];
-          snapShot.forEach(doc => {
-            data.push({
-              uid: doc.id,
-              email: doc.data().email,
-              nome: doc.data().nome,
-              urlFoto: doc.data().urlFoto,
-              curso: doc.data().curso,
-              perfil: doc.data().perfil,
-            });
-          });
-          setProfessores(data);
-        }
-      });
-
     return () => {
       listenerAlunos();
-      listenerProfessores();
     };
   }, []);
 
@@ -156,7 +130,6 @@ export const UserProvider = ({children}: any) => {
         .doc(auth().currentUser?.uid)
         .get();
       if (doc.exists) {
-        //console.log('Document data:', doc.data());
         const userData = doc.data();
         if (userData) {
           userData.uid = auth().currentUser?.uid;
@@ -170,7 +143,7 @@ export const UserProvider = ({children}: any) => {
   }
 
   return (
-    <UserContext.Provider value={{update, del, getUser, alunos, professores}}>
+    <UserContext.Provider value={{update, del, getUser, alunos}}>
       {children}
     </UserContext.Provider>
   );
