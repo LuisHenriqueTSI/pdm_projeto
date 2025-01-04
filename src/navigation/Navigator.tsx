@@ -35,6 +35,7 @@ const AuthStack = () => (
 
 const AppStack = () => {
   const theme = useTheme();
+
   return (
     <Tab.Navigator
       initialRouteName="Alunos"
@@ -50,16 +51,12 @@ const AppStack = () => {
         options={{
           tabBarLabel: '',
           tabBarIcon: () => (
-            <Icon
-              source="home-outline"
-              color={theme.colors.primary}
-              size={30}
-            />
+            <Icon source="chef-hat" color={theme.colors.primary} size={30} />
           ),
           tabBarIconStyle: {
             alignSelf: 'center',
             marginTop: 7,
-          }, // Adicionando margem superior
+          },
         }}
       />
 
@@ -69,16 +66,12 @@ const AppStack = () => {
         options={{
           tabBarLabel: '',
           tabBarIcon: () => (
-            <Icon
-              source="heart-outline"
-              color={theme.colors.primary}
-              size={27}
-            />
+            <Icon source="heart" color={theme.colors.primary} size={27} />
           ),
           tabBarIconStyle: {
             alignSelf: 'center',
             marginTop: 7,
-          }, // Adicionando margem superior
+          },
         }}
       />
 

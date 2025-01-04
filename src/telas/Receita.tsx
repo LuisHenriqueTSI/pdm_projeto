@@ -29,12 +29,10 @@ export default function Receitas({navigation}: any) {
               key={key}
               style={{...styles.card, borderColor: theme.colors.secondary}}
               onPress={() => irParaTelaReceita(receita)}>
-              {/* Imagem ocupa toda a largura */}
               <Card.Cover
                 source={{uri: receita.urlFoto}}
                 style={styles.cardImage}
               />
-              {/* Nome da receita */}
               <Card.Content style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{receita.nome}</Text>
                 <Text style={styles.cardDescription}>{receita.descricao}</Text>
