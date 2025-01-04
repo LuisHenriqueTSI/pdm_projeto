@@ -1,5 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {
@@ -63,7 +63,7 @@ export default function ReceitaTela({route, navigation}: any) {
     data.urlFoto =
       urlDevice ||
       receita?.urlFoto ||
-      'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
+      'https://raw.githubusercontent.com/LuisHenriqueTSI/repo_imagens/refs/heads/main/comida-padrao.png';
 
     setRequisitando(true);
     setAtualizando(true);
