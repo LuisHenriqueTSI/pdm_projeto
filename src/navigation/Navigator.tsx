@@ -38,7 +38,7 @@ const AppStack = () => {
 
   return (
     <Tab.Navigator
-      initialRouteName="Alunos"
+      initialRouteName="Receita"
       screenOptions={() => ({
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: 'gray',

@@ -1,13 +1,12 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React, {useContext} from 'react';
 import {ScrollView, StyleSheet, View, Text} from 'react-native';
-import {Card, FAB, List, useTheme} from 'react-native-paper';
+import {Card, FAB, List, useTheme, IconButton} from 'react-native-paper';
 import {ReceitaContext} from '../context/ReceitaProvider';
 import {Receita} from '../model/Receita';
 
 export default function Receitas({navigation}: any) {
   const theme = useTheme();
-  const {receitas} = useContext<any>(ReceitaContext);
+  const {receitas, atualizarFavorito} = useContext<any>(ReceitaContext); // Função para atualizar o favorito
 
   const irParaTelaReceita = (receita: Receita | null) => {
     navigation.navigate('ReceitaTela', {
@@ -15,14 +14,16 @@ export default function Receitas({navigation}: any) {
     });
   };
 
+  const marcarFavorito = (receita: Receita) => {
+    // Atualiza o estado de favorito da receita
+    atualizarFavorito(receita);
+  };
+
   return (
     <View
       style={{...styles.container, backgroundColor: theme.colors.background}}>
       <List.Section
         style={{...styles.list, backgroundColor: theme.colors.background}}>
-        <List.Subheader style={styles.subhearder}>
-          Lista de Receitas
-        </List.Subheader>
         <ScrollView>
           {receitas.map((receita: Receita, key: number) => (
             <Card
@@ -37,6 +38,13 @@ export default function Receitas({navigation}: any) {
                 <Text style={styles.cardTitle}>{receita.nome}</Text>
                 <Text style={styles.cardDescription}>{receita.descricao}</Text>
               </Card.Content>
+              <IconButton
+                icon={receita.favorito ? 'heart' : 'heart-outline'}
+                color={theme.colors.primary}
+                size={30}
+                onPress={() => marcarFavorito(receita)} // Chama a função para alternar o favorito
+                style={styles.favoritoButton}
+              />
             </Card>
           ))}
         </ScrollView>
@@ -44,6 +52,7 @@ export default function Receitas({navigation}: any) {
       <FAB
         icon="plus"
         style={styles.fab}
+        color="white"
         onPress={() => irParaTelaReceita(null)}
       />
     </View>
@@ -55,10 +64,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  subhearder: {
-    fontSize: 20,
-    alignSelf: 'center',
-  },
   list: {
     width: '95%',
   },
@@ -66,13 +71,15 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
     padding: 20,
+    borderRadius: 1,
   },
   cardImage: {
     width: '100%',
     height: 300,
+    borderRadius: 1,
   },
   cardContent: {
-    padding: 10,
+    padding: 20,
     alignItems: 'center',
   },
   cardTitle: {
@@ -85,10 +92,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'grey',
   },
+  favoritoButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+  },
   fab: {
     position: 'absolute',
     margin: 16,
     right: 16,
     top: 567,
+    backgroundColor: 'orange',
+    borderRadius: 50,
   },
 });

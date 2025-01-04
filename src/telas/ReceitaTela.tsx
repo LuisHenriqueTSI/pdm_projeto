@@ -54,8 +54,6 @@ export default function ReceitaTela({route, navigation}: any) {
     data.urlFoto =
       receita?.urlFoto ||
       'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
-    data.latitude = receita?.latitude || 0;
-    data.longitude = receita?.longitude || 0;
     setRequisitando(true);
     setAtualizando(true);
     const msg = await salvar(data, urlDevice);

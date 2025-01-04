@@ -14,18 +14,15 @@ export const ReceitaProvider = ({children}: any) => {
       .collection('receitas')
       .orderBy('nome')
       .onSnapshot(snapShot => {
-        //console.log(snapShot);
-        //console.log(snapShot._docs);
         if (snapShot) {
           let data: Receita[] = [];
           snapShot.forEach(doc => {
             data.push({
               uid: doc.id,
               nome: doc.data().nome,
-              descricao: doc.data().tecnologias,
-              ingredientes: doc.data().endereco,
-              latitude: doc.data().latitude,
-              longitude: doc.data().longitude,
+              descricao: doc.data().descricao,
+              ingredientes: doc.data().ingredientes,
+              favorito: doc.data().favorito,
               urlFoto: doc.data().urlFoto,
             });
           });
@@ -49,16 +46,15 @@ export const ReceitaProvider = ({children}: any) => {
       if (urlDevice !== '') {
         receita.urlFoto = await sendImageToStorage(receita, urlDevice);
         if (!receita.urlFoto) {
-          return 'Não foi possíve salvar a imagem. Contate o suporte técnico.'; //não deixa salvar ou atualizar se não realizar todos os passpos para enviar a imagem para o storage
+          return 'Não foi possível salvar a imagem. Contate o suporte técnico.';
         }
       }
       await firestore().collection('receitas').doc(receita.uid).set(
         {
           nome: receita.nome,
-          tecnologias: receita.descricao,
-          endereco: receita.ingredientes,
-          latitude: receita.latitude,
-          longitude: receita.longitude,
+          descricao: receita.descricao,
+          ingredientes: receita.ingredientes,
+          favorito: receita.favorito,
           urlFoto: receita.urlFoto,
         },
         {merge: true},
@@ -66,7 +62,7 @@ export const ReceitaProvider = ({children}: any) => {
       return 'ok';
     } catch (e) {
       console.error('ReceitaProvider, salvar: ' + e);
-      return 'Não foi possíve salvar a imagem. Por favor, contate o suporte técnico.';
+      return 'Não foi possível salvar a receita. Por favor, contate o suporte técnico.';
     }
   };
 
@@ -78,7 +74,26 @@ export const ReceitaProvider = ({children}: any) => {
       return 'ok';
     } catch (e) {
       console.error('ReceitaProvider, excluir: ', e);
-      return 'Não foi possíve excluir a receita. Por favor, contate o suporte técnico.';
+      return 'Não foi possível excluir a receita. Por favor, contate o suporte técnico.';
+    }
+  };
+
+  // Função para atualizar o status de favorito da receita
+  const atualizarFavorito = async (receita: Receita) => {
+    try {
+      // Atualiza o campo "favorito" no Firestore
+      await firestore().collection('receitas').doc(receita.uid).update({
+        favorito: !receita.favorito, // Inverte o valor de "favorito"
+      });
+
+      // Atualiza o estado local de receitas
+      setReceitas(prevReceitas =>
+        prevReceitas.map(r =>
+          r.uid === receita.uid ? {...r, favorito: !r.favorito} : r,
+        ),
+      );
+    } catch (e) {
+      console.error('ReceitaProvider, atualizarFavorito: ' + e);
     }
   };
 
@@ -103,10 +118,6 @@ export const ReceitaProvider = ({children}: any) => {
     const task = storage().ref(pathToStorage).putFile(imageRedimencionada?.uri);
     task.on('state_changed', taskSnapshot => {
       //Para acompanhar o upload, se necessário
-      // console.log(
-      //   'Transf:\n' +
-      //     `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`,
-      // );
     });
 
     //4. Busca a URL gerada pelo Storage
@@ -123,7 +134,8 @@ export const ReceitaProvider = ({children}: any) => {
   }
 
   return (
-    <ReceitaContext.Provider value={{receitas: receitas, salvar, excluir}}>
+    <ReceitaContext.Provider
+      value={{receitas, salvar, excluir, atualizarFavorito}}>
       {children}
     </ReceitaContext.Provider>
   );
