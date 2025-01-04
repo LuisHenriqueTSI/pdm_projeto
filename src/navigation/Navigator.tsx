@@ -7,7 +7,7 @@ import {StatusBar} from 'react-native';
 import {Icon, useTheme} from 'react-native-paper';
 import AlteraSenha from '../telas/AlteraSenha';
 import AlunoTela from '../telas/AlunoTela';
-import Alunos from '../telas/Alunos';
+import Alunos from '../telas/ListaReceitasFavoritas';
 import ReceitaTela from '../telas/ReceitaTela';
 import Receitas from '../telas/Receita';
 import EsqueceuSenha from '../telas/EsqueceuSenha';
