@@ -60,7 +60,7 @@ export const ReceitaProvider = ({children}: any) => {
         {merge: true},
       );
       return 'ok';
-    } catch (e) {
+    } catch (e: any) {
       console.error('ReceitaProvider, salvar: ' + e);
       return 'Não foi possível salvar a receita. Por favor, contate o suporte técnico.';
     }
@@ -68,12 +68,24 @@ export const ReceitaProvider = ({children}: any) => {
 
   const excluir = async (receita: Receita) => {
     try {
+      // Exclui o documento do Firestore
       await firestore().collection('receitas').doc(receita.uid).delete();
+
+      // Caminho do arquivo no Storage
       const pathToStorage = `imagens/receitas/${receita?.uid}/foto.png`;
-      await storage().ref(pathToStorage).delete();
-      return 'ok';
+
+      // Verifica se o arquivo existe no Storage antes de excluí-lo
+      try {
+        await storage().ref(pathToStorage).getDownloadURL(); // Verifica se o arquivo existe
+        await storage().ref(pathToStorage).delete(); // Exclui o arquivo, caso exista
+      } catch (e) {
+        if (e.code !== 'storage/object-not-found') {
+          throw e; // Lança outros erros que não sejam de arquivo inexistente
+        }
+      }
+
+      return 'ok'; // Retorna sucesso
     } catch (e) {
-      console.error('ReceitaProvider, excluir: ', e);
       return 'Não foi possível excluir a receita. Por favor, contate o suporte técnico.';
     }
   };
