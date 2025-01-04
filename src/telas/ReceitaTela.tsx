@@ -1,5 +1,5 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {
@@ -22,6 +22,10 @@ const schema = yup.object().shape({
     .string()
     .required(requiredMessage)
     .min(2, 'A descricao deve ter ao menos 2 caracteres'),
+  ingredientes: yup
+    .string()
+    .required(requiredMessage)
+    .min(2, 'Ingredientes devem ter ao menos 2 caracteres'),
 });
 
 export default function ReceitaTela({route, navigation}: any) {
@@ -33,15 +37,17 @@ export default function ReceitaTela({route, navigation}: any) {
     formState: {errors},
   } = useForm<any>({
     defaultValues: {
-      nome: receita?.nome,
-      descricao: receita?.descricao,
-      ingredientes: receita?.ingredientes,
+      nome: receita?.nome || '',
+      descricao: receita?.descricao || '',
+      ingredientes: receita?.ingredientes || '',
     },
     mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
   const [requisitando, setRequisitando] = useState(false);
-  const [urlDevice, setUrlDevice] = useState<string | undefined>('');
+  const [urlDevice, setUrlDevice] = useState<string | undefined>(
+    receita?.urlFoto || '',
+  );
   const [atualizando, setAtualizando] = useState(false);
   const [mensagem, setMensagem] = useState({tipo: '', mensagem: ''});
   const [dialogErroVisivel, setDialogErroVisivel] = useState(false);
@@ -50,29 +56,33 @@ export default function ReceitaTela({route, navigation}: any) {
   const [excluindo, setExcluindo] = useState(false);
 
   async function atualizar(data: Receita) {
+    // Se favorito não for passado, atribua false
+    data.favorito = data.favorito !== undefined ? data.favorito : false;
+
     data.uid = receita?.uid || '';
     data.urlFoto =
+      urlDevice ||
       receita?.urlFoto ||
       'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
+
     setRequisitando(true);
     setAtualizando(true);
-    const msg = await salvar(data, urlDevice);
+
+    const msg = await salvar(data, urlDevice || '');
     if (msg === 'ok') {
       setMensagem({
         tipo: 'ok',
         mensagem: 'Show! Operação realizada com sucesso.',
       });
       setDialogErroVisivel(true);
-      setRequisitando(false);
-      setAtualizando(false);
     } else {
       setMensagem({tipo: 'erro', mensagem: msg});
       setDialogErroVisivel(true);
-      setRequisitando(false);
-      setAtualizando(false);
     }
-  }
 
+    setRequisitando(false);
+    setAtualizando(false);
+  }
   function avisarDaExclusaoPermanenteDoRegistro() {
     setDialogExcluirVisivel(true);
   }
@@ -83,19 +93,17 @@ export default function ReceitaTela({route, navigation}: any) {
     setExcluindo(true);
     const msg = await excluir(receita);
     if (msg === 'ok') {
-      setDialogErroVisivel(true);
-      setRequisitando(false);
-      setAtualizando(false);
       setMensagem({
         tipo: 'ok',
         mensagem: 'A receita foi excluída com sucesso.',
       });
+      setDialogErroVisivel(true);
     } else {
       setMensagem({tipo: 'erro', mensagem: 'ops! algo deu errado'});
       setDialogErroVisivel(true);
-      setRequisitando(false);
-      setExcluindo(false);
     }
+    setRequisitando(false);
+    setExcluindo(false);
   }
 
   const buscaNaGaleria = () => {
@@ -109,7 +117,7 @@ export default function ReceitaTela({route, navigation}: any) {
         setMensagem({tipo: 'ok', mensagem: 'Ok, você cancelou.'});
       } else {
         const path = response.assets?.[0].uri;
-        setUrlDevice(path); //armazena a uri para a imagem no device
+        setUrlDevice(path); // armazena a uri para a imagem no device
       }
     });
   };
@@ -125,7 +133,7 @@ export default function ReceitaTela({route, navigation}: any) {
         setMensagem({tipo: 'ok', mensagem: 'Ok, você cancelou.'});
       } else {
         const path = response.assets?.[0].uri;
-        setUrlDevice(path); //armazena a uri para a imagem no device
+        setUrlDevice(path); // armazena a uri para a imagem no device
       }
     });
   }
@@ -151,14 +159,14 @@ export default function ReceitaTela({route, navigation}: any) {
               style={styles.buttonImage}
               mode="outlined"
               icon="image"
-              onPress={() => buscaNaGaleria()}>
+              onPress={buscaNaGaleria}>
               Galeria
             </Button>
             <Button
               style={styles.buttonImage}
               mode="outlined"
               icon="camera"
-              onPress={() => tiraFoto()}>
+              onPress={tiraFoto}>
               Foto
             </Button>
           </View>
@@ -227,9 +235,9 @@ export default function ReceitaTela({route, navigation}: any) {
             )}
             name="ingredientes"
           />
-          {errors.nome && (
+          {errors.ingredientes && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
-              {errors.nome?.message?.toString()}
+              {errors.ingredientes?.message?.toString()}
             </Text>
           )}
           <Button
@@ -243,35 +251,15 @@ export default function ReceitaTela({route, navigation}: any) {
           <Button
             style={styles.buttonOthers}
             mode="outlined"
-            onPress={handleSubmit(avisarDaExclusaoPermanenteDoRegistro)}
+            onPress={avisarDaExclusaoPermanenteDoRegistro}
             loading={requisitando}
             disabled={requisitando}>
             {!excluindo ? 'Excluir' : 'Excluindo'}
           </Button>
         </>
       </ScrollView>
-      <Dialog
-        visible={dialogExcluirVisivel}
-        onDismiss={() => {
-          setDialogErroVisivel(false);
-          navigation.goBack();
-        }}>
-        <Dialog.Icon icon={'alert-circle-outline'} size={60} />
-        <Dialog.Title style={styles.textDialog}>{'Ops!'}</Dialog.Title>
-        <Dialog.Content>
-          <Text style={styles.textDialog} variant="bodyLarge">
-            {
-              'Você tem certeza que deseja excluir esse registro?\nEsta operação será irreversível.'
-            }
-          </Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setDialogExcluirVisivel(false)}>
-            Cancelar
-          </Button>
-          <Button onPress={excluirReceita}>Excluir</Button>
-        </Dialog.Actions>
-      </Dialog>
+
+      {/* Diálogo de erro */}
       <Dialog
         visible={dialogErroVisivel}
         onDismiss={() => {
@@ -297,6 +285,29 @@ export default function ReceitaTela({route, navigation}: any) {
           </Text>
         </Dialog.Content>
       </Dialog>
+
+      {/* Diálogo de exclusão */}
+      <Dialog
+        visible={dialogExcluirVisivel}
+        onDismiss={() => {
+          setDialogExcluirVisivel(false);
+        }}>
+        <Dialog.Icon icon={'alert-circle-outline'} size={60} />
+        <Dialog.Title style={styles.textDialog}>{'Ops!'}</Dialog.Title>
+        <Dialog.Content>
+          <Text style={styles.textDialog} variant="bodyLarge">
+            {
+              'Você tem certeza que deseja excluir esse registro?\nEsta operação será irreversível.'
+            }
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setDialogExcluirVisivel(false)}>
+            Cancelar
+          </Button>
+          <Button onPress={excluirReceita}>Excluir</Button>
+        </Dialog.Actions>
+      </Dialog>
     </View>
   );
 }
@@ -311,37 +322,35 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     alignSelf: 'center',
-    borderRadius: 180 / 2,
-    marginTop: 50,
-  },
-  textinput: {
-    width: 350,
-    height: 50,
-    marginTop: 20,
-    backgroundColor: 'transparent',
-  },
-  textError: {
-    width: 350,
-  },
-  button: {
-    marginTop: 40,
-    width: 350,
+    borderRadius: 10,
   },
   divButtonsImage: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 15,
-    marginBottom: 20,
+    justifyContent: 'space-around',
+    marginTop: 10,
   },
   buttonImage: {
-    width: 180,
+    margin: 5,
+    width: 120,
   },
-  textDialog: {
-    textAlign: 'center',
+  textinput: {
+    marginBottom: 15,
+    width: '100%',
+  },
+  button: {
+    marginTop: 15,
+    marginBottom: 10,
+    width: '100%',
   },
   buttonOthers: {
-    marginTop: 20,
-    marginBottom: 30,
-    width: 350,
+    marginBottom: 10,
+    width: '100%',
+  },
+  textError: {
+    marginBottom: 10,
+    fontSize: 14,
+  },
+  textDialog: {
+    fontSize: 16,
   },
 });

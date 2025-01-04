@@ -10,7 +10,7 @@ export class Receita {
     nome: string,
     descricao: string,
     ingredientes: string,
-    favorito: boolean,
+    favorito: boolean = false,
     urlFoto: string,
   ) {
     this.uid = uid;
