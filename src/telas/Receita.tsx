@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {ScrollView, StyleSheet, View, Text} from 'react-native';
 import {Card, FAB, List, useTheme, IconButton} from 'react-native-paper';
 import {ReceitaContext} from '../context/ReceitaProvider';
@@ -7,6 +7,9 @@ import {Receita} from '../model/Receita';
 export default function Receitas({navigation}: any) {
   const theme = useTheme();
   const {receitas, atualizarFavorito} = useContext<any>(ReceitaContext); // Função para atualizar o favorito
+  const [favoritosAtualizando, setFavoritosAtualizando] = useState<string[]>(
+    [],
+  ); // IDs de receitas sendo atualizadas
 
   const irParaTelaReceita = (receita: Receita | null) => {
     navigation.navigate('ReceitaTela', {
@@ -14,8 +17,15 @@ export default function Receitas({navigation}: any) {
     });
   };
 
-  const marcarFavorito = (receita: Receita) => {
-    atualizarFavorito(receita);
+  const marcarFavorito = async (receita: Receita) => {
+    if (favoritosAtualizando.includes(receita.uid)) return; // Impede múltiplos cliques
+
+    setFavoritosAtualizando(prev => [...prev, receita.uid]); // Marca como "atualizando"
+
+    const receitaAtualizada = {...receita, favorito: !receita.favorito}; // Atualiza localmente
+    await atualizarFavorito(receitaAtualizada); // Chama a função do contexto para salvar a mudança
+
+    setFavoritosAtualizando(prev => prev.filter(uid => uid !== receita.uid)); // Remove da lista após atualizar
   };
 
   return (
@@ -43,6 +53,7 @@ export default function Receitas({navigation}: any) {
                 size={30}
                 onPress={() => marcarFavorito(receita)} // Chama a função para alternar o favorito
                 style={styles.favoritoButton}
+                disabled={favoritosAtualizando.includes(receita.uid)} // Desativa durante a atualização
               />
             </Card>
           ))}
