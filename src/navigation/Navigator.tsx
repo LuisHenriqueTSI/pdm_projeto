@@ -8,8 +8,8 @@ import {Icon, useTheme} from 'react-native-paper';
 import AlteraSenha from '../telas/AlteraSenha';
 import AlunoTela from '../telas/AlunoTela';
 import Alunos from '../telas/Alunos';
-import EmpresaTela from '../telas/EmpresaTela';
-import Empresas from '../telas/Empresas';
+import ReceitaTela from '../telas/ReceitaTela';
+import Receitas from '../telas/Receita';
 import EsqueceuSenha from '../telas/EsqueceuSenha';
 import Menu from '../telas/Menu';
 import Perfil from '../telas/PerfilTela';
@@ -75,10 +75,10 @@ const AppStack = () => {
         }}
       />
       <Tab.Screen
-        component={Empresas}
-        name="Empresas"
+        component={Receitas}
+        name="Receitas"
         options={{
-          tabBarLabel: 'Empresas',
+          tabBarLabel: 'Receitas',
           tabBarIcon: () => (
             <Icon
               source="office-building-outline"
@@ -133,8 +133,8 @@ export default function Navigator() {
           }}
         />
         <Stack.Screen
-          component={EmpresaTela}
-          name="EmpresaTela"
+          component={ReceitaTela}
+          name="ReceitaTela"
           options={{
             presentation: 'modal',
           }}

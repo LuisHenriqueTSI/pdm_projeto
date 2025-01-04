@@ -1,7 +1,7 @@
 import React from 'react';
 import {MD3DarkTheme, MD3LightTheme, PaperProvider} from 'react-native-paper';
 import {AuthProvider} from '../context/AuthProvider';
-import {EmpresaProvider} from '../context/EmpresaProvider';
+import {ReceitaProvider} from '../context/ReceitaProvider';
 import {UserProvider} from '../context/UserProvider';
 import Navigator from './Navigator';
 
@@ -20,11 +20,11 @@ export default function Providers() {
   return (
     <AuthProvider>
       <UserProvider>
-        <EmpresaProvider>
+        <ReceitaProvider>
           <PaperProvider theme={temaDoApp ? themeLight : themeDark}>
             <Navigator />
           </PaperProvider>
-        </EmpresaProvider>
+        </ReceitaProvider>
       </UserProvider>
     </AuthProvider>
   );

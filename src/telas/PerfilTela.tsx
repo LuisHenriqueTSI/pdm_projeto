@@ -234,7 +234,7 @@ export default function PerfilTela({navigation}: any) {
               <TextInput
                 style={styles.textinput}
                 disabled
-                label="Curso ou Empresa"
+                label="Curso ou Receita"
                 placeholder="Clique para selecionar outro curso"
                 mode="outlined"
                 autoCapitalize="none"

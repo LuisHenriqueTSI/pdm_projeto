@@ -2,16 +2,16 @@
 import React, {useContext} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {Avatar, Card, FAB, List, useTheme} from 'react-native-paper';
-import {EmpresaContext} from '../context/EmpresaProvider';
-import {Empresa} from '../model/Empresa';
+import {ReceitaContext} from '../context/ReceitaProvider';
+import {Receita} from '../model/Receita';
 
-export default function Empresas({navigation}: any) {
+export default function Receitas({navigation}: any) {
   const theme = useTheme();
-  const {empresas} = useContext<any>(EmpresaContext);
+  const {receitas} = useContext<any>(ReceitaContext);
 
-  const irParaTelaEmpresa = (empresa: Empresa | null) => {
-    navigation.navigate('EmpresaTela', {
-      empresa,
+  const irParaTelaReceita = (receita: Receita | null) => {
+    navigation.navigate('ReceitaTela', {
+      receita: receita,
     });
   };
 
@@ -21,19 +21,19 @@ export default function Empresas({navigation}: any) {
       <List.Section
         style={{...styles.list, backgroundColor: theme.colors.background}}>
         <List.Subheader style={styles.subhearder}>
-          Lista de Empresas
+          Lista de Receitas
         </List.Subheader>
         <ScrollView>
-          {empresas.map((empresa: Empresa, key: number) => (
+          {receitas.map((receita: Receita, key: number) => (
             <Card
               key={key}
               style={{...styles.card, borderColor: theme.colors.secondary}}
-              onPress={() => irParaTelaEmpresa(empresa)}>
+              onPress={() => irParaTelaReceita(receita)}>
               <Card.Title
-                title={empresa.nome}
-                subtitle={empresa.tecnologias}
+                title={receita.nome}
+                subtitle={receita.descricao}
                 left={() => (
-                  <Avatar.Image size={40} source={{uri: empresa.urlFoto}} />
+                  <Avatar.Image size={40} source={{uri: receita.urlFoto}} />
                 )}
               />
             </Card>
@@ -43,7 +43,7 @@ export default function Empresas({navigation}: any) {
       <FAB
         icon="plus"
         style={styles.fab}
-        onPress={() => irParaTelaEmpresa(null)}
+        onPress={() => irParaTelaReceita(null)}
       />
     </View>
   );

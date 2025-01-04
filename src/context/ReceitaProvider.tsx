@@ -2,34 +2,34 @@ import ImageResizer from '@bam.tech/react-native-image-resizer';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import React, {createContext, useEffect, useState} from 'react';
-import {Empresa} from '../model/Empresa';
+import {Receita as Receita} from '../model/Receita';
 
-export const EmpresaContext = createContext({});
+export const ReceitaContext = createContext({});
 
-export const EmpresaProvider = ({children}: any) => {
-  const [empresas, setEmpresas] = useState<Empresa[]>([]);
+export const ReceitaProvider = ({children}: any) => {
+  const [receitas, setReceitas] = useState<Receita[]>([]);
 
   useEffect(() => {
     const listener = firestore()
-      .collection('empresas')
+      .collection('receitas')
       .orderBy('nome')
       .onSnapshot(snapShot => {
         //console.log(snapShot);
         //console.log(snapShot._docs);
         if (snapShot) {
-          let data: Empresa[] = [];
+          let data: Receita[] = [];
           snapShot.forEach(doc => {
             data.push({
               uid: doc.id,
               nome: doc.data().nome,
-              tecnologias: doc.data().tecnologias,
-              endereco: doc.data().endereco,
+              descricao: doc.data().tecnologias,
+              ingredientes: doc.data().endereco,
               latitude: doc.data().latitude,
               longitude: doc.data().longitude,
               urlFoto: doc.data().urlFoto,
             });
           });
-          setEmpresas(data);
+          setReceitas(data);
         }
       });
 
@@ -39,52 +39,52 @@ export const EmpresaProvider = ({children}: any) => {
   }, []);
 
   const salvar = async (
-    empresa: Empresa,
+    receita: Receita,
     urlDevice: string,
   ): Promise<string> => {
     try {
-      if (empresa.uid === '') {
-        empresa.uid = firestore().collection('empresas').doc().id;
+      if (receita.uid === '') {
+        receita.uid = firestore().collection('receitas').doc().id;
       }
       if (urlDevice !== '') {
-        empresa.urlFoto = await sendImageToStorage(empresa, urlDevice);
-        if (!empresa.urlFoto) {
+        receita.urlFoto = await sendImageToStorage(receita, urlDevice);
+        if (!receita.urlFoto) {
           return 'Não foi possíve salvar a imagem. Contate o suporte técnico.'; //não deixa salvar ou atualizar se não realizar todos os passpos para enviar a imagem para o storage
         }
       }
-      await firestore().collection('empresas').doc(empresa.uid).set(
+      await firestore().collection('receitas').doc(receita.uid).set(
         {
-          nome: empresa.nome,
-          tecnologias: empresa.tecnologias,
-          endereco: empresa.endereco,
-          latitude: empresa.latitude,
-          longitude: empresa.longitude,
-          urlFoto: empresa.urlFoto,
+          nome: receita.nome,
+          tecnologias: receita.descricao,
+          endereco: receita.ingredientes,
+          latitude: receita.latitude,
+          longitude: receita.longitude,
+          urlFoto: receita.urlFoto,
         },
         {merge: true},
       );
       return 'ok';
     } catch (e) {
-      console.error('EmpresaProvider, salvar: ' + e);
+      console.error('ReceitaProvider, salvar: ' + e);
       return 'Não foi possíve salvar a imagem. Por favor, contate o suporte técnico.';
     }
   };
 
-  const excluir = async (empresa: Empresa) => {
+  const excluir = async (receita: Receita) => {
     try {
-      await firestore().collection('empresas').doc(empresa.uid).delete();
-      const pathToStorage = `imagens/empresas/${empresa?.uid}/foto.png`;
+      await firestore().collection('receitas').doc(receita.uid).delete();
+      const pathToStorage = `imagens/receitas/${receita?.uid}/foto.png`;
       await storage().ref(pathToStorage).delete();
       return 'ok';
     } catch (e) {
-      console.error('EmpresaProvider, excluir: ', e);
-      return 'Não foi possíve excluir o empresa. Por favor, contate o suporte técnico.';
+      console.error('ReceitaProvider, excluir: ', e);
+      return 'Não foi possíve excluir a receita. Por favor, contate o suporte técnico.';
     }
   };
 
   //urlDevice: qual imagem deve ser enviada via upload
   async function sendImageToStorage(
-    empresa: Empresa,
+    receita: Receita,
     urlDevice: string,
   ): Promise<string> {
     //1. Redimensiona e compacta a imagem
@@ -96,7 +96,7 @@ export const EmpresaProvider = ({children}: any) => {
       80,
     );
     //2. e prepara o path onde ela deve ser salva no storage
-    const pathToStorage = `imagens/empresas/${empresa?.uid}/foto.png`;
+    const pathToStorage = `imagens/receitas/${receita?.uid}/foto.png`;
 
     //3. Envia para o storage
     let url: string | null = ''; //local onde a imagem será salva no Storage
@@ -116,15 +116,15 @@ export const EmpresaProvider = ({children}: any) => {
     });
     //5. Pode dar zebra, então pega a exceção
     task.catch(e => {
-      console.error('EmpresaProvider, sendImageToStorage: ' + e);
+      console.error('ReceitaProvider, sendImageToStorage: ' + e);
       url = null;
     });
     return url;
   }
 
   return (
-    <EmpresaContext.Provider value={{empresas, salvar, excluir}}>
+    <ReceitaContext.Provider value={{receitas: receitas, salvar, excluir}}>
       {children}
-    </EmpresaContext.Provider>
+    </ReceitaContext.Provider>
   );
 };

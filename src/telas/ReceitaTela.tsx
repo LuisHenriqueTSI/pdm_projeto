@@ -9,8 +9,8 @@ import {
 } from 'react-native-image-picker';
 import {Button, Dialog, Text, TextInput, useTheme} from 'react-native-paper';
 import * as yup from 'yup';
-import {EmpresaContext} from '../context/EmpresaProvider';
-import {Empresa} from '../model/Empresa';
+import {ReceitaContext} from '../context/ReceitaProvider';
+import {Receita} from '../model/Receita';
 
 const requiredMessage = 'Campo obrigatório';
 const schema = yup.object().shape({
@@ -18,14 +18,14 @@ const schema = yup.object().shape({
     .string()
     .required(requiredMessage)
     .min(2, 'O nome deve ter ao menos 2 caracteres'),
-  tecnologias: yup
+  descricao: yup
     .string()
     .required(requiredMessage)
-    .min(2, 'A tecnologia deve ter ao menos 2 caracteres'),
+    .min(2, 'A descricao deve ter ao menos 2 caracteres'),
 });
 
-export default function EmpresaTela({route, navigation}: any) {
-  const [empresa, setEmpresa] = useState<Empresa | null>(route.params.empresa);
+export default function ReceitaTela({route, navigation}: any) {
+  const [receita, _setReceita] = useState<Receita | null>(route.params.receita);
   const theme = useTheme();
   const {
     control,
@@ -33,9 +33,9 @@ export default function EmpresaTela({route, navigation}: any) {
     formState: {errors},
   } = useForm<any>({
     defaultValues: {
-      nome: empresa?.nome,
-      tecnologias: empresa?.tecnologias,
-      endereco: empresa?.endereco,
+      nome: receita?.nome,
+      descricao: receita?.descricao,
+      ingredientes: receita?.ingredientes,
     },
     mode: 'onSubmit',
     resolver: yupResolver(schema),
@@ -46,16 +46,16 @@ export default function EmpresaTela({route, navigation}: any) {
   const [mensagem, setMensagem] = useState({tipo: '', mensagem: ''});
   const [dialogErroVisivel, setDialogErroVisivel] = useState(false);
   const [dialogExcluirVisivel, setDialogExcluirVisivel] = useState(false);
-  const {salvar, excluir} = useContext<any>(EmpresaContext);
+  const {salvar, excluir} = useContext<any>(ReceitaContext);
   const [excluindo, setExcluindo] = useState(false);
 
-  async function atualizar(data: Empresa) {
-    data.uid = empresa?.uid || '';
+  async function atualizar(data: Receita) {
+    data.uid = receita?.uid || '';
     data.urlFoto =
-      empresa?.urlFoto ||
+      receita?.urlFoto ||
       'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
-    data.latitude = empresa?.latitude || 0;
-    data.longitude = empresa?.longitude || 0;
+    data.latitude = receita?.latitude || 0;
+    data.longitude = receita?.longitude || 0;
     setRequisitando(true);
     setAtualizando(true);
     const msg = await salvar(data, urlDevice);
@@ -79,18 +79,18 @@ export default function EmpresaTela({route, navigation}: any) {
     setDialogExcluirVisivel(true);
   }
 
-  async function excluirEmpresa() {
+  async function excluirReceita() {
     setDialogExcluirVisivel(false);
     setRequisitando(true);
     setExcluindo(true);
-    const msg = await excluir(empresa);
+    const msg = await excluir(receita);
     if (msg === 'ok') {
       setDialogErroVisivel(true);
       setRequisitando(false);
       setAtualizando(false);
       setMensagem({
         tipo: 'ok',
-        mensagem: 'A empresa foi excluída com sucesso.',
+        mensagem: 'A receita foi excluída com sucesso.',
       });
     } else {
       setMensagem({tipo: 'erro', mensagem: 'ops! algo deu errado'});
@@ -142,8 +142,8 @@ export default function EmpresaTela({route, navigation}: any) {
             source={
               urlDevice !== ''
                 ? {uri: urlDevice}
-                : empresa && empresa?.urlFoto !== ''
-                ? {uri: empresa?.urlFoto}
+                : receita && receita?.urlFoto !== ''
+                ? {uri: receita.urlFoto}
                 : require('../assets/images/logo512.png')
             }
             loadingIndicatorSource={require('../assets/images/person.png')}
@@ -169,8 +169,8 @@ export default function EmpresaTela({route, navigation}: any) {
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 style={styles.textinput}
-                label="Nome"
-                placeholder="Digite o nome da empresa"
+                label="Nome da Receita"
+                placeholder="Digite o nome da receita"
                 mode="outlined"
                 autoCapitalize="words"
                 returnKeyType="next"
@@ -192,8 +192,8 @@ export default function EmpresaTela({route, navigation}: any) {
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 style={styles.textinput}
-                label="Teconologias"
-                placeholder="react, react native, expo"
+                label="Descrição"
+                placeholder="alho, pimenta, sal..."
                 mode="outlined"
                 autoCapitalize="words"
                 returnKeyType="next"
@@ -204,11 +204,11 @@ export default function EmpresaTela({route, navigation}: any) {
                 right={<TextInput.Icon icon="rocket-launch" />}
               />
             )}
-            name="tecnologias"
+            name="descricao"
           />
-          {errors.tecnologias && (
+          {errors.descricao && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
-              {errors.tecnologias?.message?.toString()}
+              {errors.descricao?.message?.toString()}
             </Text>
           )}
           <Controller
@@ -216,8 +216,8 @@ export default function EmpresaTela({route, navigation}: any) {
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
                 style={styles.textinput}
-                label="Endereço"
-                placeholder="Digite o endereço"
+                label="Ingredientes"
+                placeholder="Digite os ingredientes"
                 mode="outlined"
                 autoCapitalize="words"
                 returnKeyType="next"
@@ -227,7 +227,7 @@ export default function EmpresaTela({route, navigation}: any) {
                 right={<TextInput.Icon icon="map" />}
               />
             )}
-            name="endereco"
+            name="ingredientes"
           />
           {errors.nome && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
@@ -271,7 +271,7 @@ export default function EmpresaTela({route, navigation}: any) {
           <Button onPress={() => setDialogExcluirVisivel(false)}>
             Cancelar
           </Button>
-          <Button onPress={excluirEmpresa}>Excluir</Button>
+          <Button onPress={excluirReceita}>Excluir</Button>
         </Dialog.Actions>
       </Dialog>
       <Dialog
