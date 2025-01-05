@@ -18,14 +18,16 @@ export default function Receitas({navigation}: any) {
   };
 
   const marcarFavorito = async (receita: Receita) => {
-    if (favoritosAtualizando.includes(receita.uid)) return; // Impede múltiplos cliques
+    if (favoritosAtualizando.includes(receita.uid)) {
+      return;
+    }
 
-    setFavoritosAtualizando(prev => [...prev, receita.uid]); // Marca como "atualizando"
+    setFavoritosAtualizando(prev => [...prev, receita.uid]);
 
-    const receitaAtualizada = {...receita, favorito: !receita.favorito}; // Atualiza localmente
-    await atualizarFavorito(receitaAtualizada); // Chama a função do contexto para salvar a mudança
+    const receitaAtualizada = {...receita, favorito: !receita.favorito};
+    await atualizarFavorito(receitaAtualizada);
 
-    setFavoritosAtualizando(prev => prev.filter(uid => uid !== receita.uid)); // Remove da lista após atualizar
+    setFavoritosAtualizando(prev => prev.filter(uid => uid !== receita.uid));
   };
 
   return (

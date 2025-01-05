@@ -3,7 +3,6 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {Perfil} from '../model/Perfil';
 import {Usuario} from '../model/Usuario';
 import {AuthContext} from './AuthProvider';
 
@@ -17,7 +16,6 @@ export const UserProvider = ({children}: any) => {
     //listener para o perfil Aluno
     const listenerAlunos = firestore()
       .collection('usuarios')
-      .where('perfil', '==', Perfil.Aluno)
       .orderBy('nome')
       .onSnapshot(snapShot => {
         if (snapShot) {

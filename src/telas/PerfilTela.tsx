@@ -44,7 +44,6 @@ export default function PerfilTela({navigation}: any) {
     defaultValues: {
       nome: userAuth.nome,
       email: userAuth.email,
-      perfil: userAuth.perfil,
     },
     mode: 'onSubmit',
     resolver: yupResolver(schema),
@@ -61,7 +60,6 @@ export default function PerfilTela({navigation}: any) {
   useEffect(() => {
     register('nome');
     register('email');
-    register('perfil');
   }, [register]);
 
   async function atualizaPerfil(data: Usuario) {
@@ -223,25 +221,6 @@ export default function PerfilTela({navigation}: any) {
             </Text>
           )}
 
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.textinput}
-                disabled
-                label="Perfil"
-                placeholder="Clique para selecionar outro perfil"
-                mode="outlined"
-                autoCapitalize="none"
-                returnKeyType="go"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                right={<TextInput.Icon icon="account-eye" />}
-              />
-            )}
-            name="perfil"
-          />
           {errors.perfil && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
               {errors.perfil?.message?.toString()}

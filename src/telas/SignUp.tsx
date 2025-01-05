@@ -6,7 +6,6 @@ import {Button, Dialog, Text, TextInput, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as yup from 'yup';
 import {AuthContext} from '../context/AuthProvider';
-import {Perfil} from '../model/Perfil';
 import {Usuario} from '../model/Usuario';
 
 const requiredMessage = 'Campo obrigatório';
@@ -27,7 +26,7 @@ const schema = yup
       .required(requiredMessage)
       .matches(
         /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{8,}$/,
-        'A senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um númeral, um caractere especial e um total de 8 caracteres',
+        'A senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um numeral, um caractere especial e um total de 8 caracteres',
       ),
     confirmar_senha: yup
       .string()
@@ -53,6 +52,7 @@ export default function SignUp({navigation}: any) {
     mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
+
   const [exibirSenha, setExibirSenha] = useState(true);
   const [requisitando, setRequisitando] = useState(false);
   const [dialogVisivel, setDialogVisivel] = useState(false);
@@ -70,8 +70,9 @@ export default function SignUp({navigation}: any) {
     setRequisitando(true);
     data.urlFoto =
       'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
-    data.perfil = Perfil.Aluno;
+
     const msg = await signUp(data);
+
     if (msg === 'ok') {
       setMensagem({
         tipo: 'ok',
@@ -79,12 +80,11 @@ export default function SignUp({navigation}: any) {
           'Show! Você foi cadastrado com sucesso. Verifique seu email para validar sua conta.',
       });
       setDialogVisivel(true);
-      setRequisitando(false);
     } else {
       setMensagem({tipo: 'erro', mensagem: msg});
       setDialogVisivel(true);
-      setRequisitando(false);
     }
+    setRequisitando(false);
   }
 
   return (
@@ -135,7 +135,7 @@ export default function SignUp({navigation}: any) {
             )}
             name="nome"
           />
-          {errors.email && (
+          {errors.nome && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
               {errors.nome?.message?.toString()}
             </Text>
@@ -183,7 +183,7 @@ export default function SignUp({navigation}: any) {
                 right={
                   <TextInput.Icon
                     icon="eye"
-                    onPress={() => setExibirSenha(previus => !previus)}
+                    onPress={() => setExibirSenha(prev => !prev)}
                   />
                 }
               />
@@ -195,6 +195,7 @@ export default function SignUp({navigation}: any) {
               {errors.senha?.message?.toString()}
             </Text>
           )}
+
           <Controller
             control={control}
             render={({field: {onChange, onBlur, value}}) => (
@@ -212,7 +213,7 @@ export default function SignUp({navigation}: any) {
                 right={
                   <TextInput.Icon
                     icon="eye"
-                    onPress={() => setExibirSenha(previus => !previus)}
+                    onPress={() => setExibirSenha(prev => !prev)}
                   />
                 }
               />
@@ -224,6 +225,7 @@ export default function SignUp({navigation}: any) {
               {errors.confirmar_senha?.message?.toString()}
             </Text>
           )}
+
           <Button
             style={styles.button}
             mode="contained"
@@ -281,11 +283,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: 'transparent',
   },
-  textEsqueceuSenha: {
-    alignSelf: 'flex-end',
-    marginTop: 20,
-  },
-  textCadastro: {},
   textError: {
     width: 350,
   },

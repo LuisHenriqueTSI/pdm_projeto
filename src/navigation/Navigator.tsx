@@ -61,7 +61,7 @@ const AppStack = () => {
 
       <Tab.Screen
         component={ListaReceitasFavoritas}
-        name="Alunos"
+        name="ListaReceitasFavoritas"
         options={{
           tabBarLabel: '',
           tabBarIcon: () => (
