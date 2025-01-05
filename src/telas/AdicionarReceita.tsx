@@ -299,7 +299,7 @@ export default function ReceitaTela({route, navigation}: any) {
                 mode="outlined"
                 onChangeText={onChange}
                 value={value}
-                right={<TextInput.Icon icon="food" />}
+                right={<TextInput.Icon icon="silverware-fork-knife" />}
               />
             )}
             name="categoria"
@@ -390,7 +390,6 @@ export default function ReceitaTela({route, navigation}: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     padding: 20,
   },
   image: {
