@@ -26,6 +26,13 @@ const schema = yup.object().shape({
     .string()
     .required(requiredMessage)
     .min(2, 'Ingredientes devem ter ao menos 2 caracteres'),
+  dificuldade: yup.string().required(requiredMessage),
+  tempoPreparo: yup
+    .number()
+    .required(requiredMessage)
+    .positive('O tempo deve ser positivo')
+    .integer('O tempo deve ser um número inteiro'),
+  categoria: yup.string().required(requiredMessage),
 });
 
 export default function ReceitaTela({route, navigation}: any) {
@@ -40,6 +47,10 @@ export default function ReceitaTela({route, navigation}: any) {
       nome: receita?.nome || '',
       descricao: receita?.descricao || '',
       ingredientes: receita?.ingredientes || '',
+      dificuldade: receita?.dificuldade || '',
+      tempoPreparo: receita?.tempoPreparo || 0,
+      categoria: receita?.categoria || '',
+      favorito: receita?.favorito || false,
     },
     mode: 'onSubmit',
     resolver: yupResolver(schema),
@@ -235,6 +246,70 @@ export default function ReceitaTela({route, navigation}: any) {
             )}
             name="ingredientes"
           />
+          <Controller
+            control={control}
+            render={({field: {onChange, value}}) => (
+              <TextInput
+                style={styles.textinput}
+                label="Tempo de Preparo (min)"
+                placeholder="Ex: 30"
+                keyboardType="number-pad"
+                mode="outlined"
+                onChangeText={onChange}
+                value={String(value)}
+                right={<TextInput.Icon icon="clock-outline" />}
+              />
+            )}
+            name="tempoPreparo"
+          />
+          {errors.tempoPreparo && (
+            <Text style={styles.textError}>
+              {errors.tempoPreparo?.message?.toString()}
+            </Text>
+          )}
+
+          <Controller
+            control={control}
+            render={({field: {onChange, value}}) => (
+              <TextInput
+                style={styles.textinput}
+                label="Dificuldade"
+                placeholder="Ex: Fácil"
+                mode="outlined"
+                onChangeText={onChange}
+                value={value}
+                right={<TextInput.Icon icon="chart-bar" />}
+              />
+            )}
+            name="dificuldade"
+          />
+          {errors.dificuldade && (
+            <Text style={styles.textError}>
+              {errors.dificuldade?.message?.toString()}
+            </Text>
+          )}
+
+          <Controller
+            control={control}
+            render={({field: {onChange, value}}) => (
+              <TextInput
+                style={styles.textinput}
+                label="Categoria"
+                placeholder="Ex: Sobremesa"
+                mode="outlined"
+                onChangeText={onChange}
+                value={value}
+                right={<TextInput.Icon icon="food" />}
+              />
+            )}
+            name="categoria"
+          />
+          {errors.categoria && (
+            <Text style={styles.textError}>
+              {errors.categoria?.message?.toString()}
+            </Text>
+          )}
+
           {errors.ingredientes && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
               {errors.ingredientes?.message?.toString()}
