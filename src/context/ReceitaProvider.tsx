@@ -2,9 +2,18 @@ import ImageResizer from '@bam.tech/react-native-image-resizer';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import React, {createContext, useEffect, useState} from 'react';
-import {Receita as Receita} from '../model/Receita';
+import {Receita} from '../model/Receita';
 
-export const ReceitaContext = createContext({});
+type ReceitaContextType = {
+  receitas: Receita[];
+  salvar: (receita: Receita, urlDevice: string) => Promise<string>;
+  excluir: (receita: Receita) => Promise<string>;
+  atualizarFavorito: (receita: Receita) => Promise<void>;
+};
+
+export const ReceitaContext = createContext<ReceitaContextType | undefined>(
+  undefined,
+);
 
 export const ReceitaProvider = ({children}: any) => {
   const [receitas, setReceitas] = useState<Receita[]>([]);
@@ -68,37 +77,31 @@ export const ReceitaProvider = ({children}: any) => {
 
   const excluir = async (receita: Receita) => {
     try {
-      // Exclui o documento do Firestore
       await firestore().collection('receitas').doc(receita.uid).delete();
 
-      // Caminho do arquivo no Storage
       const pathToStorage = `imagens/receitas/${receita?.uid}/foto.png`;
 
-      // Verifica se o arquivo existe no Storage antes de excluí-lo
       try {
-        await storage().ref(pathToStorage).getDownloadURL(); // Verifica se o arquivo existe
-        await storage().ref(pathToStorage).delete(); // Exclui o arquivo, caso exista
-      } catch (e) {
+        await storage().ref(pathToStorage).getDownloadURL();
+        await storage().ref(pathToStorage).delete();
+      } catch (e: any) {
         if (e.code !== 'storage/object-not-found') {
-          throw e; // Lança outros erros que não sejam de arquivo inexistente
+          throw e;
         }
       }
 
-      return 'ok'; // Retorna sucesso
+      return 'ok';
     } catch (e) {
       return 'Não foi possível excluir a receita. Por favor, contate o suporte técnico.';
     }
   };
 
-  // Função para atualizar o status de favorito da receita
   const atualizarFavorito = async (receita: Receita) => {
     try {
-      // Atualiza o campo "favorito" no Firestore
       await firestore().collection('receitas').doc(receita.uid).update({
-        favorito: !receita.favorito, // Inverte o valor de "favorito"
+        favorito: !receita.favorito,
       });
 
-      // Atualiza o estado local de receitas
       setReceitas(prevReceitas =>
         prevReceitas.map(r =>
           r.uid === receita.uid ? {...r, favorito: !r.favorito} : r,
@@ -109,40 +112,34 @@ export const ReceitaProvider = ({children}: any) => {
     }
   };
 
-  //urlDevice: qual imagem deve ser enviada via upload
   async function sendImageToStorage(
     receita: Receita,
     urlDevice: string,
   ): Promise<string> {
-    //1. Redimensiona e compacta a imagem
-    let imageRedimencionada = await ImageResizer.createResizedImage(
-      urlDevice,
-      150,
-      200,
-      'PNG',
-      80,
-    );
-    //2. e prepara o path onde ela deve ser salva no storage
-    const pathToStorage = `imagens/receitas/${receita?.uid}/foto.png`;
+    try {
+      let imageRedimencionada = await ImageResizer.createResizedImage(
+        urlDevice,
+        150,
+        200,
+        'PNG',
+        80,
+      );
 
-    //3. Envia para o storage
-    let url: string | null = ''; //local onde a imagem será salva no Storage
-    const task = storage().ref(pathToStorage).putFile(imageRedimencionada?.uri);
-    task.on('state_changed', taskSnapshot => {
-      //Para acompanhar o upload, se necessário
-    });
+      const pathToStorage = `imagens/receitas/${receita?.uid}/foto.png`;
 
-    //4. Busca a URL gerada pelo Storage
-    await task.then(async () => {
-      //se a task finalizar com sucesso, busca a url
+      let url: string | null = '';
+      const task = storage()
+        .ref(pathToStorage)
+        .putFile(imageRedimencionada?.uri);
+
+      await task;
       url = await storage().ref(pathToStorage).getDownloadURL();
-    });
-    //5. Pode dar zebra, então pega a exceção
-    task.catch(e => {
+
+      return url;
+    } catch (e) {
       console.error('ReceitaProvider, sendImageToStorage: ' + e);
-      url = null;
-    });
-    return url;
+      return '';
+    }
   }
 
   return (

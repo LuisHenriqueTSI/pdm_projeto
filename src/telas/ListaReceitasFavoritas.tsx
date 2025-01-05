@@ -1,21 +1,19 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React, {useContext} from 'react';
-import {ScrollView, StyleSheet, View, Text} from 'react-native'; // Importando o Text de react-native
+import {ScrollView, StyleSheet, View, Text} from 'react-native';
 import {Card, List, useTheme} from 'react-native-paper';
-import {ReceitaContext} from '../context/ReceitaProvider'; // Use o contexto de receitas
+import {ReceitaContext} from '../context/ReceitaProvider';
 import {Receita} from '../model/Receita';
 
-export default function Favoritos({navigation}: any) {
+export default function Favoritos({navigation}: {navigation: any}) {
   const theme = useTheme();
-  const {receitas} = useContext(ReceitaContext);
+  const {receitas} = useContext(ReceitaContext) ?? {};
 
-  // Filtra as receitas favoritas
-  const receitasFavoritas = receitas.filter(
-    (receita: Receita) => receita.favorito,
-  );
+  // Filtra as receitas favoritas (verifica se receitas está definido)
+  const receitasFavoritas =
+    receitas?.filter((receita: Receita) => receita.favorito) || [];
 
-  const irParaTelaReceita = (receita: Receita | null) => {
-    navigation.navigate('ReceitaTela', {
+  const irParaTelaReceita = (receita: Receita) => {
+    navigation.navigate('AdicionarReceita', {
       receita: receita,
     });
   };
@@ -38,13 +36,13 @@ export default function Favoritos({navigation}: any) {
               </Card.Content>
             </Card>
           ) : (
-            receitasFavoritas.map((receita: Receita, key: number) => (
+            receitasFavoritas.map((receita: Receita, index: number) => (
               <Card
-                key={key}
+                key={index}
                 style={{...styles.card, borderColor: theme.colors.secondary}}
                 onPress={() => irParaTelaReceita(receita)}>
                 <Card.Cover
-                  source={{uri: receita.urlFoto}}
+                  source={{uri: receita.urlFoto || undefined}}
                   style={styles.cardImage}
                 />
                 <Card.Content style={styles.cardContent}>
@@ -77,30 +75,31 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 10,
-    padding: 20,
-    borderRadius: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
+    elevation: 4, // Adiciona sombra no Android
+    backgroundColor: 'white',
   },
   cardImage: {
     width: '100%',
-    height: 300,
-    borderRadius: 1,
+    height: 200,
   },
   cardContent: {
-    padding: 20,
-    alignItems: 'center',
+    padding: 16,
+    alignItems: 'flex-start',
   },
   cardTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 8,
     color: 'black',
   },
   cardDescription: {
-    fontSize: 16,
-    color: 'grey',
+    fontSize: 14,
+    color: 'gray',
   },
   noFavoritesText: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'gray',
     textAlign: 'center',
   },

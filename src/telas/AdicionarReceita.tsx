@@ -176,14 +176,14 @@ export default function ReceitaTela({route, navigation}: any) {
               <TextInput
                 style={styles.textinput}
                 label="Nome da Receita"
-                placeholder="Digite o nome da receita"
+                placeholder=""
                 mode="outlined"
                 autoCapitalize="words"
                 returnKeyType="next"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                right={<TextInput.Icon icon="office-building" />}
+                right={<TextInput.Icon icon="food" />}
               />
             )}
             name="nome"
@@ -199,7 +199,7 @@ export default function ReceitaTela({route, navigation}: any) {
               <TextInput
                 style={styles.textinput}
                 label="Descrição"
-                placeholder="alho, pimenta, sal..."
+                placeholder=""
                 mode="outlined"
                 autoCapitalize="words"
                 returnKeyType="next"
@@ -207,7 +207,7 @@ export default function ReceitaTela({route, navigation}: any) {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                right={<TextInput.Icon icon="rocket-launch" />}
+                right={<TextInput.Icon icon="text" />}
               />
             )}
             name="descricao"
@@ -223,14 +223,14 @@ export default function ReceitaTela({route, navigation}: any) {
               <TextInput
                 style={styles.textinput}
                 label="Ingredientes"
-                placeholder="Digite os ingredientes"
+                placeholder=""
                 mode="outlined"
                 autoCapitalize="words"
                 returnKeyType="next"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                right={<TextInput.Icon icon="map" />}
+                right={<TextInput.Icon icon="format-list-bulleted" />}
               />
             )}
             name="ingredientes"

@@ -12,7 +12,7 @@ export default function Receitas({navigation}: any) {
   ); // IDs de receitas sendo atualizadas
 
   const irParaTelaReceita = (receita: Receita | null) => {
-    navigation.navigate('ReceitaTela', {
+    navigation.navigate('AdicionarReceita', {
       receita: receita,
     });
   };
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
   },
   favoritoButton: {
     position: 'absolute',
-    top: 2,
-    right: 10,
+    top: 380,
+    right: '40%',
   },
   fab: {
     position: 'absolute',

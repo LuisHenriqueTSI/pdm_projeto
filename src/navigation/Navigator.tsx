@@ -7,7 +7,7 @@ import {StatusBar} from 'react-native';
 import {Icon, useTheme} from 'react-native-paper';
 import AlteraSenha from '../telas/AlteraSenha';
 import ListaReceitasFavoritas from '../telas/ListaReceitasFavoritas';
-import ReceitaTela from '../telas/ReceitaTela';
+import AdicionarReceita from '../telas/AdicionarReceita';
 import Receitas from '../telas/Receita';
 import EsqueceuSenha from '../telas/EsqueceuSenha';
 import Menu from '../telas/Menu';
@@ -109,8 +109,8 @@ export default function Navigator() {
         <Stack.Screen component={AuthStack} name="AuthStack" />
         <Stack.Screen component={AppStack} name="AppStack" />
         <Stack.Screen
-          component={ReceitaTela}
-          name="ReceitaTela"
+          component={AdicionarReceita}
+          name="AdicionarReceita"
           options={{
             presentation: 'modal',
           }}
