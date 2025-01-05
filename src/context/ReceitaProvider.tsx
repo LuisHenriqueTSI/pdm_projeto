@@ -33,6 +33,9 @@ export const ReceitaProvider = ({children}: any) => {
               ingredientes: doc.data().ingredientes,
               favorito: doc.data().favorito,
               urlFoto: doc.data().urlFoto,
+              dificuldade: doc.data().dificuldade,
+              tempoPreparo: doc.data().tempoPreparo,
+              categoria: doc.data().categoria,
             });
           });
           setReceitas(data);
@@ -65,6 +68,9 @@ export const ReceitaProvider = ({children}: any) => {
           ingredientes: receita.ingredientes,
           favorito: receita.favorito,
           urlFoto: receita.urlFoto,
+          dificuldade: receita.dificuldade,
+          tempoPreparo: receita.tempoPreparo,
+          categoria: receita.categoria,
         },
         {merge: true},
       );

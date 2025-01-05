@@ -49,7 +49,7 @@ export default function Receitas({navigation}: any) {
               </Card.Content>
               <IconButton
                 icon={receita.favorito ? 'heart' : 'heart-outline'}
-                iconColor={theme.colors.favoritar}
+                iconColor={theme.colors.primary}
                 size={30}
                 onPress={() => marcarFavorito(receita)} // Chama a função para alternar o favorito
                 style={styles.favoritoButton}

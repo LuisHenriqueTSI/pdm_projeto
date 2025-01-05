@@ -6,7 +6,6 @@ import {Button, Dialog, Text, TextInput, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as yup from 'yup';
 import {AuthContext} from '../context/AuthProvider';
-import {Curso} from '../model/Curso';
 import {Perfil} from '../model/Perfil';
 import {Usuario} from '../model/Usuario';
 
@@ -71,7 +70,6 @@ export default function SignUp({navigation}: any) {
     setRequisitando(true);
     data.urlFoto =
       'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
-    data.curso = Curso.CSTSI;
     data.perfil = Perfil.Aluno;
     const msg = await signUp(data);
     if (msg === 'ok') {

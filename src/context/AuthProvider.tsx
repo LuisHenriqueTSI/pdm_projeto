@@ -53,7 +53,6 @@ export const AuthProvider = ({children}: any) => {
         email: usuario.email,
         nome: usuario.nome,
         urlFoto: usuario.urlFoto,
-        curso: usuario.curso,
         perfil: usuario.perfil,
       };
       await firestore()

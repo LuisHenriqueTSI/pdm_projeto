@@ -28,7 +28,6 @@ const schema = yup
       .string()
       .required(requiredMessage)
       .matches(/\S+@\S+\.\S+/, 'Email inválido'),
-    curso: yup.string().required(requiredMessage),
     perfil: yup.string().required(requiredMessage),
   })
   .required();
@@ -45,7 +44,6 @@ export default function PerfilTela({navigation}: any) {
     defaultValues: {
       nome: userAuth.nome,
       email: userAuth.email,
-      curso: userAuth.curso,
       perfil: userAuth.perfil,
     },
     mode: 'onSubmit',
@@ -63,7 +61,6 @@ export default function PerfilTela({navigation}: any) {
   useEffect(() => {
     register('nome');
     register('email');
-    register('curso');
     register('perfil');
   }, [register]);
 
@@ -71,7 +68,7 @@ export default function PerfilTela({navigation}: any) {
     setRequisitando(true);
     setAtualizando(true);
     data.urlFoto =
-      'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50'; //uma imagem fake para ver como fica durante o dev
+      'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50'; // Imagem fake para testes
     const msg = await update(data, urlDevice);
     if (msg === 'ok') {
       setMensagem({
@@ -79,14 +76,12 @@ export default function PerfilTela({navigation}: any) {
         mensagem: 'Show! Seu perfil foi atualizado com sucesso.',
       });
       setDialogErroVisivel(true);
-      setRequisitando(false);
-      setAtualizando(false);
     } else {
       setMensagem({tipo: 'erro', mensagem: msg});
       setDialogErroVisivel(true);
-      setRequisitando(false);
-      setAtualizando(false);
     }
+    setRequisitando(false);
+    setAtualizando(false);
   }
 
   function avisarDaExclusaoPermanenteDaConta() {
@@ -106,11 +101,11 @@ export default function PerfilTela({navigation}: any) {
         }),
       );
     } else {
-      setMensagem({tipo: 'erro', mensagem: 'ops! algo deu errado'});
+      setMensagem({tipo: 'erro', mensagem: 'Ops! Algo deu errado'});
       setDialogErroVisivel(true);
-      setRequisitando(false);
-      setExcluindo(false);
     }
+    setRequisitando(false);
+    setExcluindo(false);
   }
 
   const buscaNaGaleria = () => {
@@ -124,7 +119,7 @@ export default function PerfilTela({navigation}: any) {
         setMensagem({tipo: 'ok', mensagem: 'Ok, você cancelou.'});
       } else {
         const path = response.assets?.[0].uri;
-        setUrlDevice(path); //armazena a uri para a imagem no device
+        setUrlDevice(path); // Armazena a URI da imagem no dispositivo
       }
     });
   };
@@ -140,7 +135,7 @@ export default function PerfilTela({navigation}: any) {
         setMensagem({tipo: 'ok', mensagem: 'Ok, você cancelou.'});
       } else {
         const path = response.assets?.[0].uri;
-        setUrlDevice(path); //armazena a uri para a imagem no device
+        setUrlDevice(path); // Armazena a URI da imagem no dispositivo
       }
     });
   }
@@ -196,7 +191,7 @@ export default function PerfilTela({navigation}: any) {
             )}
             name="nome"
           />
-          {errors.email && (
+          {errors.nome && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
               {errors.nome?.message?.toString()}
             </Text>
@@ -234,30 +229,6 @@ export default function PerfilTela({navigation}: any) {
               <TextInput
                 style={styles.textinput}
                 disabled
-                label="Curso ou Receita"
-                placeholder="Clique para selecionar outro curso"
-                mode="outlined"
-                autoCapitalize="none"
-                returnKeyType="next"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                right={<TextInput.Icon icon="domain" />}
-              />
-            )}
-            name="curso"
-          />
-          {errors.curso && (
-            <Text style={{...styles.textError, color: theme.colors.error}}>
-              {errors.senha?.message?.toString()}
-            </Text>
-          )}
-          <Controller
-            control={control}
-            render={({field: {onChange, onBlur, value}}) => (
-              <TextInput
-                style={styles.textinput}
-                disabled
                 label="Perfil"
                 placeholder="Clique para selecionar outro perfil"
                 mode="outlined"
@@ -276,6 +247,7 @@ export default function PerfilTela({navigation}: any) {
               {errors.perfil?.message?.toString()}
             </Text>
           )}
+
           <Button
             style={styles.button}
             mode="contained"
@@ -287,7 +259,7 @@ export default function PerfilTela({navigation}: any) {
           <Button
             style={styles.buttonOthers}
             mode="outlined"
-            onPress={handleSubmit(avisarDaExclusaoPermanenteDaConta)}
+            onPress={avisarDaExclusaoPermanenteDaConta}
             loading={requisitando}
             disabled={requisitando}>
             {!excluindo ? 'Excluir' : 'Excluindo'}
@@ -296,16 +268,13 @@ export default function PerfilTela({navigation}: any) {
       </ScrollView>
       <Dialog
         visible={dialogExcluirVisivel}
-        onDismiss={() => {
-          setDialogErroVisivel(false);
-        }}>
+        onDismiss={() => setDialogExcluirVisivel(false)}>
         <Dialog.Icon icon={'alert-circle-outline'} size={60} />
         <Dialog.Title style={styles.textDialog}>{'Ops!'}</Dialog.Title>
         <Dialog.Content>
           <Text style={styles.textDialog} variant="bodyLarge">
-            {
-              'Você tem certeza que deseja excluir sua conta?\nEsta operação será irreversível.'
-            }
+            Você tem certeza que deseja excluir sua conta? Esta operação será
+            irreversível.
           </Text>
         </Dialog.Content>
         <Dialog.Actions>
@@ -339,54 +308,42 @@ export default function PerfilTela({navigation}: any) {
             {mensagem.mensagem}
           </Text>
         </Dialog.Content>
+        <Dialog.Actions>
+          <Button
+            onPress={() => {
+              setDialogErroVisivel(false);
+              if (mensagem.tipo === 'ok') {
+                navigation.goBack();
+              }
+            }}>
+            Ok
+          </Button>
+        </Dialog.Actions>
       </Dialog>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-  },
+  container: {flex: 1, padding: 8},
+  textinput: {marginVertical: 5},
+  textError: {fontSize: 12, marginLeft: 10},
+  button: {marginTop: 10},
+  buttonOthers: {marginTop: 20},
   image: {
     width: 200,
     height: 200,
     alignSelf: 'center',
-    borderRadius: 200 / 2,
-    marginTop: 50,
-  },
-  textinput: {
-    width: 350,
-    height: 50,
-    marginTop: 20,
-    backgroundColor: 'transparent',
-  },
-  textEsqueceuSenha: {
-    alignSelf: 'flex-end',
-    marginTop: 20,
-  },
-  textCadastro: {},
-  textError: {
-    width: 350,
-  },
-  button: {
-    marginTop: 40,
-  },
-  buttonOthers: {
-    marginTop: 20,
-    marginBottom: 30,
+    borderRadius: 100,
+    marginVertical: 20,
   },
   divButtonsImage: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 15,
-    marginBottom: 20,
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 15,
   },
-  buttonImage: {
-    width: 180,
-  },
-  textDialog: {
-    textAlign: 'center',
-  },
+  buttonImage: {flex: 1},
+  textDialog: {textAlign: 'center'},
 });
