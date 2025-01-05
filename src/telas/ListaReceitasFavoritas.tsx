@@ -1,21 +1,25 @@
 import React, {useContext} from 'react';
 import {ScrollView, StyleSheet, View, Text} from 'react-native';
-import {Card, List, useTheme} from 'react-native-paper';
+import {Card, List, useTheme, IconButton} from 'react-native-paper';
 import {ReceitaContext} from '../context/ReceitaProvider';
 import {Receita} from '../model/Receita';
 
-export default function Favoritos({navigation}: {navigation: any}) {
+export default function Favoritos() {
   const theme = useTheme();
-  const {receitas} = useContext(ReceitaContext) ?? {};
+  const {receitas, atualizarFavorito} = useContext(ReceitaContext) ?? {};
 
   // Filtra as receitas favoritas (verifica se receitas está definido)
   const receitasFavoritas =
     receitas?.filter((receita: Receita) => receita.favorito) || [];
 
-  const irParaTelaReceita = (receita: Receita) => {
-    navigation.navigate('AdicionarReceita', {
-      receita: receita,
-    });
+  const desmarcarFavorito = async (receita: Receita) => {
+    try {
+      if (atualizarFavorito) {
+        await atualizarFavorito(receita);
+      }
+    } catch (error) {
+      console.error('Erro ao desmarcar favorito:', error);
+    }
   };
 
   return (
@@ -39,8 +43,7 @@ export default function Favoritos({navigation}: {navigation: any}) {
             receitasFavoritas.map((receita: Receita, index: number) => (
               <Card
                 key={index}
-                style={{...styles.card, borderColor: theme.colors.secondary}}
-                onPress={() => irParaTelaReceita(receita)}>
+                style={{...styles.card, borderColor: theme.colors.secondary}}>
                 <Card.Cover
                   source={{uri: receita.urlFoto || undefined}}
                   style={styles.cardImage}
@@ -50,7 +53,23 @@ export default function Favoritos({navigation}: {navigation: any}) {
                   <Text style={styles.cardDescription}>
                     {receita.descricao}
                   </Text>
+                  <Text style={styles.cardDetails}>
+                    <Text style={styles.cardDetailLabel}>Ingredientes:</Text>{' '}
+                    {Array.isArray(receita.ingredientes)
+                      ? receita.ingredientes.join(', ')
+                      : 'Não especificado'}
+                  </Text>
+                  <Text style={styles.cardDetails}>
+                    <Text style={styles.cardDetailLabel}>Modo de Preparo:</Text>{' '}
+                  </Text>
                 </Card.Content>
+                <Card.Actions>
+                  <IconButton
+                    icon="heart-off"
+                    iconColor={theme.colors.error}
+                    onPress={() => desmarcarFavorito(receita)}
+                  />
+                </Card.Actions>
               </Card>
             ))
           )}
@@ -97,6 +116,14 @@ const styles = StyleSheet.create({
   cardDescription: {
     fontSize: 14,
     color: 'gray',
+  },
+  cardDetails: {
+    fontSize: 14,
+    color: 'black',
+    marginTop: 8,
+  },
+  cardDetailLabel: {
+    fontWeight: 'bold',
   },
   noFavoritesText: {
     fontSize: 16,
