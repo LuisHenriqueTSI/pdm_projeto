@@ -28,7 +28,6 @@ const schema = yup
       .string()
       .required(requiredMessage)
       .matches(/\S+@\S+\.\S+/, 'Email inválido'),
-    perfil: yup.string().required(requiredMessage),
   })
   .required();
 
@@ -66,7 +65,7 @@ export default function PerfilTela({navigation}: any) {
     setRequisitando(true);
     setAtualizando(true);
     data.urlFoto =
-      'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50'; // Imagem fake para testes
+      'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
     const msg = await update(data, urlDevice);
     if (msg === 'ok') {
       setMensagem({
@@ -218,12 +217,6 @@ export default function PerfilTela({navigation}: any) {
           {errors.email && (
             <Text style={{...styles.textError, color: theme.colors.error}}>
               {errors.email?.message?.toString()}
-            </Text>
-          )}
-
-          {errors.perfil && (
-            <Text style={{...styles.textError, color: theme.colors.error}}>
-              {errors.perfil?.message?.toString()}
             </Text>
           )}
 

@@ -13,7 +13,6 @@ export const UserProvider = ({children}: any) => {
   const [alunos, setAlunos] = useState<Usuario[]>([]);
 
   useEffect(() => {
-    //listener para o perfil Aluno
     const listenerAlunos = firestore()
       .collection('usuarios')
       .orderBy('nome')
@@ -26,7 +25,6 @@ export const UserProvider = ({children}: any) => {
               email: doc.data().email,
               nome: doc.data().nome,
               urlFoto: doc.data().urlFoto,
-              perfil: doc.data().perfil,
             });
           });
           setAlunos(data);
@@ -49,7 +47,6 @@ export const UserProvider = ({children}: any) => {
       const usuarioFirestore = {
         email: usuario.email,
         nome: usuario.nome,
-        perfil: usuario.perfil,
         urlFoto: usuario.urlFoto,
       };
       await firestore()
