@@ -1,7 +1,7 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import React, {useContext, useEffect, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {Alert, Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Image, ScrollView, StyleSheet} from 'react-native';
 import {Button, Dialog, Text, TextInput, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import * as yup from 'yup';
@@ -96,26 +96,6 @@ export default function SignUp({navigation}: any) {
             style={styles.image}
             source={require('../assets/images/logo512.png')}
           />
-          <View style={styles.divButtonsImage}>
-            <Button
-              style={styles.buttonImage}
-              mode="outlined"
-              icon="image"
-              onPress={() =>
-                Alert.alert('Vamos ver isso em upload de imagens')
-              }>
-              Galeria
-            </Button>
-            <Button
-              style={styles.buttonImage}
-              mode="outlined"
-              icon="camera"
-              onPress={() =>
-                Alert.alert('Vamos ver isso em upload de imagens')
-              }>
-              Foto
-            </Button>
-          </View>
 
           <Controller
             control={control}

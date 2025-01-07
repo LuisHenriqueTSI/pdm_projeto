@@ -53,15 +53,6 @@ export default function Favoritos() {
                   <Text style={styles.cardDescription}>
                     {receita.descricao}
                   </Text>
-                  <Text style={styles.cardDetails}>
-                    <Text style={styles.cardDetailLabel}>Ingredientes:</Text>{' '}
-                    {Array.isArray(receita.ingredientes)
-                      ? receita.ingredientes.join(', ')
-                      : 'Não especificado'}
-                  </Text>
-                  <Text style={styles.cardDetails}>
-                    <Text style={styles.cardDetailLabel}>Modo de Preparo:</Text>{' '}
-                  </Text>
                 </Card.Content>
                 <Card.Actions>
                   <IconButton
